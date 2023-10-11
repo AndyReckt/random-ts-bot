@@ -14,7 +14,7 @@ const folder = __dirname + "/../commands/slash";
 
 // Grab all the command files from the commands directory you created earlier
 
-const loadCommand = (client: RClient) => {
+const loadSlashCommands = (client: RClient) => {
     getFilesInDir(folder).forEach((file) => {
         const filePath = path.join(folder, file);
 
@@ -31,7 +31,7 @@ const loadCommand = (client: RClient) => {
         }
     });
 };
-const refreshCommands = async (client: RClient) => {
+const refreshSlashCommands = async (client: RClient) => {
     const rest = new REST().setToken(process.env.TOKEN!);
 
     try {
@@ -60,8 +60,8 @@ const refreshCommands = async (client: RClient) => {
 };
 
 export async function initializeCommands(client: RClient) {
-    loadCommand(client);
-    await refreshCommands(client);
+    loadSlashCommands(client);
+    await refreshSlashCommands(client);
 }
 
 /**
