@@ -12,8 +12,6 @@ import { Command, RClient } from "../utils/schemas";
 
 const folder = __dirname + "/../commands/slash";
 
-// Grab all the command files from the commands directory you created earlier
-
 const loadSlashCommands = (client: RClient) => {
     getFilesInDir(folder).forEach((file) => {
         const filePath = path.join(folder, file);

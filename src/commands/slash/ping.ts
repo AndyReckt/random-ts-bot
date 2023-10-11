@@ -1,9 +1,7 @@
 import {
     SlashCommandBuilder,
     CommandInteraction,
-    InteractionResponse,
     Client,
-    Message,
     EmbedBuilder,
     Colors,
 } from "discord.js";
@@ -31,14 +29,6 @@ class PingCommand extends Command {
 
         let ping = Date.now() - message.createdTimestamp;
 
-        let avatar: string;
-
-        if (interaction.user.avatarURL() != null) {
-            avatar = interaction.user.avatarURL()!;
-        } else {
-            avatar = interaction.user.defaultAvatarURL;
-        }
-
         return await message.edit({
             embeds: [
                 new EmbedBuilder()
@@ -64,7 +54,9 @@ class PingCommand extends Command {
                     ])
                     .setFooter({
                         text: `Requested by ${interaction.user.globalName} (${interaction.user.username} | ${interaction.user.id})`,
-                        iconURL: avatar,
+                        iconURL: interaction.user.avatarURL()
+                            ? interaction.user.avatarURL()!
+                            : interaction.user.defaultAvatarURL,
                     }),
             ],
         });
