@@ -4,22 +4,69 @@ import {
     InteractionResponse,
     Client,
     Message,
+    EmbedBuilder,
+    Colors,
 } from "discord.js";
 import { Command } from "../../utils/schemas";
+import messages from "../../utils/messages";
 
 class PingCommand extends Command {
     constructor() {
         super(
             new SlashCommandBuilder()
                 .setName("ping")
-                .setDescription("Replies with Pong!")
+                .setDescription("Get the bot's latency.")
         );
     }
 
     async run(client: Client, interaction: CommandInteraction) {
-        return await interaction.followUp({
-            content: "Pong!",
+        let pinging = messages.info().setDescription("Pinging...");
+
+        let api = client.ws.ping;
+
+        let message = await interaction.followUp({
+            embeds: [pinging],
             ephemeral: true,
+        });
+
+        let ping = Date.now() - message.createdTimestamp;
+
+        let avatar: string;
+
+        if (interaction.user.avatarURL() != null) {
+            avatar = interaction.user.avatarURL()!;
+        } else {
+            avatar = interaction.user.defaultAvatarURL;
+        }
+
+        return await message.edit({
+            embeds: [
+                new EmbedBuilder()
+                    .setTitle("Pong!")
+                    .setColor(Colors.Purple)
+                    .setDescription("Here are the results of the ping test:")
+                    .addFields([
+                        {
+                            name: ":door: Gateway Ping",
+                            value: `${api}ms`,
+                            inline: true,
+                        },
+                        {
+                            name: ":satellite: API Ping",
+                            value: `${ping}ms`,
+                            inline: true,
+                        },
+                        {
+                            name: ":stopwatch: Total",
+                            value: `${api + ping}ms`,
+                            inline: true,
+                        },
+                    ])
+                    .setFooter({
+                        text: `Requested by ${interaction.user.globalName} (${interaction.user.username} | ${interaction.user.id})`,
+                        iconURL: avatar,
+                    }),
+            ],
         });
     }
 }
