@@ -4,8 +4,8 @@ export function getFilesInDir(path: string): string[] {
 	let files: string[] = [];
 
 	readdirSync(path).forEach((file) => {
-		if (lstatSync(file).isDirectory()) {
-			getFilesInDir(path).forEach((it) => files.push(it));
+		if (lstatSync(path + "/" + file).isDirectory()) {
+			getFilesInDir(path).forEach((it) => files.push(file + "/" + it));
 		} else {
 			files.push(file);
 		}

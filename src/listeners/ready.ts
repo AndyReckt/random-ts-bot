@@ -1,5 +1,5 @@
 import { Client, Events } from "discord.js";
-import { Listener } from "utils/interfaces";
+import { Listener } from "../utils/interfaces";
 
 class ReadyListener extends Listener {
 	listen(): void {
