@@ -84,10 +84,15 @@ export async function handleCommand(
     }
 
     if (
-        command.permissions &&
-        command.permissions.some(
-            (p) => !(interaction.member as GuildMember).permissions.has(p)
-        )
+        (command.permissions &&
+            command.permissions.some(
+                (p) => !(interaction.member as GuildMember).permissions.has(p)
+            )) ||
+        (command.roleOnly &&
+            !(interaction.member as GuildMember).roles.cache.some(
+                (role) => role.id == command.roleOnly
+            ))
+
         //&& !client.developers.includes(interaction.user.id)
     )
         return await interaction.followUp({
