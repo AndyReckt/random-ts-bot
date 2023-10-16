@@ -7,6 +7,7 @@ import {
     CacheType,
     InteractionResponse,
     Message,
+    TimestampStyles,
 } from "discord.js";
 import { Command } from "../../utils/schemas";
 import messages from "../../utils/messages";
@@ -71,7 +72,28 @@ class MinecraftCommand extends Command {
         const username = data["username"];
         const uuid = data["uuid"];
 
+        let names: any[] = data["usernames"];
+
+        console.log(names);
+
+        let usernames = "";
+        let count = 0;
+
+        for (const nameData of names) {
+            const name = nameData["username"];
+            const date = Math.floor(Date.parse(nameData["changed_at"]) / 1000);
+
+            const changedAt = `<t:${date}:${TimestampStyles.LongDate}>`;
+            const changedAgo = `<t:${date}:${TimestampStyles.RelativeTime}>`;
+
+            if (count > 0) usernames += "\n";
+
+            count++;
+            usernames += `\`${name}\` - ${changedAt}, ${changedAgo}`;
+        }
+
         const reply = new EmbedBuilder()
+            .setColor(Colors.Purple)
             .setTitle(`Minecraft profile for **${username}**`)
             .setThumbnail(
                 `https://starlightskins.lunareclipse.studio/skin-render/isometric/${uuid}/face`
@@ -88,7 +110,12 @@ class MinecraftCommand extends Command {
                         `Skin: [Render](https://starlightskins.lunareclipse.studio/skin-render/isometric/${uuid}/full) ([Raw skin](https://starlightskins.lunareclipse.studio/skin-render/skin/${uuid}/processed))` +
                         "\n" +
                         `Cape: [Raw cape](https://crafatar.com/capes/${uuid})`,
-                    inline: true,
+                    inline: false,
+                },
+                {
+                    name: ":stopwatch: Usernames",
+                    value: usernames,
+                    inline: false,
                 },
             ])
             .setFooter({
