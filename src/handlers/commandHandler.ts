@@ -71,13 +71,13 @@ export async function handleCommand(
     client: RClient,
     interaction: CommandInteraction
 ) {
-    await interaction.deferReply();
+    // await interaction.deferReply();
 
     const { commandName } = interaction;
     const command = client.commands.get(commandName);
 
     if (!command) {
-        return await interaction.followUp({
+        return await interaction.reply({
             ephemeral: true,
             embeds: [messages.error().setDescription("Command not found.")],
         });
@@ -95,7 +95,7 @@ export async function handleCommand(
 
         //&& !client.developers.includes(interaction.user.id)
     )
-        return await interaction.followUp({
+        return await interaction.reply({
             ephemeral: true,
             embeds: [
                 messages
@@ -113,7 +113,7 @@ export async function handleCommand(
             `An error occurred in '${command.name()}' command.\n${error}\n`
         );
 
-        return await interaction.followUp({
+        return await interaction.reply({
             ephemeral: true,
             embeds: [
                 messages

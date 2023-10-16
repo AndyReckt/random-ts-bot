@@ -22,7 +22,7 @@ class PingCommand extends Command {
 
         let api = client.ws.ping;
 
-        let message = await interaction.followUp({
+        let message = await interaction.reply({
             embeds: [pinging],
             ephemeral: true,
         });
