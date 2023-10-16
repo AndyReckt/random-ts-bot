@@ -74,8 +74,6 @@ class MinecraftCommand extends Command {
 
         let names: any[] = data["usernames"];
 
-        console.log(names);
-
         let usernames = "";
         let count = 0;
 
