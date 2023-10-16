@@ -35,9 +35,10 @@ class MinecraftCommand extends Command {
         await interaction.deferReply({
             ephemeral: false,
         });
-        const searched = interaction.options.get("username")?.value as string;
-        let json;
 
+        const searched = interaction.options.get("username")?.value as string;
+
+        let json;
         let error;
 
         await fetch(`https://api.crafty.gg/api/v2/players?search=${searched}`)
