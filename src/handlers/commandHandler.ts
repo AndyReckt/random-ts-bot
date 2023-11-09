@@ -8,7 +8,7 @@ import {
 import messages from "../utils/messages";
 import { getFilesInDir } from "../utils/fileUtil";
 import path from "path";
-import { Command, RClient } from "../utils/schemas";
+import { Command, RClient, SlashCommand } from "../utils/schemas";
 
 const folder = __dirname + "/../commands/slash";
 
@@ -19,9 +19,12 @@ const loadSlashCommands = (client: RClient) => {
         if (file.endsWith(".js")) {
             try {
                 const module = require(filePath);
-                if (module.default() && module.default() instanceof Command) {
-                    let command: Command = module.default();
-                    client.commands.set(command.name(), command);
+                if (
+                    module.default() &&
+                    module.default() instanceof SlashCommand
+                ) {
+                    let command: SlashCommand = module.default();
+                    client.slashCommands.set(command.name(), command);
                 }
             } catch (error) {
                 console.error(`Error while loading ${file}: ${error}`);
@@ -34,12 +37,12 @@ const refreshSlashCommands = async (client: RClient) => {
 
     try {
         console.log(
-            `Started refreshing ${client.commands.size} application (/) commands.`
+            `Started refreshing ${client.slashCommands.size} application (/) commands.`
         );
 
         let jsonArray: RESTPostAPIApplicationCommandsJSONBody[] = [];
 
-        for (let [_, value] of client.commands) {
+        for (let [_, value] of client.slashCommands) {
             jsonArray.push(value.command.toJSON());
         }
 
@@ -67,14 +70,14 @@ export async function initializeCommands(client: RClient) {
  * @param client Custom client
  * @param interaction Command interaction
  */
-export async function handleCommand(
+export async function handleSlashCommand(
     client: RClient,
     interaction: CommandInteraction
 ) {
     // await interaction.deferReply();
 
     const { commandName } = interaction;
-    const command = client.commands.get(commandName);
+    const command = client.slashCommands.get(commandName);
 
     if (!command) {
         return await interaction.reply({

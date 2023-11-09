@@ -5,10 +5,10 @@ import {
     EmbedBuilder,
     Colors,
 } from "discord.js";
-import { Command } from "../../utils/schemas";
+import { SlashCommand } from "../../utils/schemas";
 import messages from "../../utils/messages";
 
-class PingCommand extends Command {
+class PingCommand extends SlashCommand {
     constructor() {
         super(
             new SlashCommandBuilder()

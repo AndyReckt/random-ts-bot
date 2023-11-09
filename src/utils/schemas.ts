@@ -9,7 +9,8 @@ import {
 } from "discord.js";
 
 export class RClient extends Client {
-    commands = new Collection<string, Command>();
+    messageCommands = new Collection<string, MessageCommand>();
+    slashCommands = new Collection<string, SlashCommand>();
 }
 
 export abstract class Listener {
@@ -23,11 +24,52 @@ export abstract class Listener {
 }
 
 export abstract class Command {
-    command: SlashCommandBuilder;
     permissions: PermissionResolvable[] | undefined;
     roleOnly: string | undefined;
 
+    constructor() {}
+
+    abstract run(client: Client, interaction: any): any;
+
+    /**
+     * name
+     */
+    abstract name(): string;
+
+    /**
+     * description
+     */
+    abstract description(): string;
+
+    /**
+     * nsfw
+     */
+    abstract nsfw(): boolean;
+
+    /**
+     * addPermission
+     */
+    public addPermission(permission: PermissionResolvable) {
+        if (!this.permissions) this.permissions = [];
+        this.permissions.push(permission);
+    }
+}
+
+export abstract class MessageCommand extends Command {
+    constructor() {
+        super();
+    }
+
+    abstract run(client: Client, interaction: Message): any;
+
+    abstract helpCategory(): string;
+}
+
+export abstract class SlashCommand extends Command {
+    command: SlashCommandBuilder;
+
     constructor(command: SlashCommandBuilder) {
+        super();
         this.command = command;
     }
 
@@ -46,7 +88,7 @@ export abstract class Command {
     /**
      * description
      */
-    public description() {
+    public description(): string {
         return this.command.description;
     }
 
@@ -54,14 +96,9 @@ export abstract class Command {
      * nsfw
      */
     public nsfw() {
-        return this.command.nsfw;
-    }
-
-    /**
-     * addPermission
-     */
-    public addPermission(permission: PermissionResolvable) {
-        if (!this.permissions) this.permissions = [];
-        this.permissions.push(permission);
+        if (this.command.nsfw) {
+            return this.command.nsfw;
+        }
+        return false;
     }
 }

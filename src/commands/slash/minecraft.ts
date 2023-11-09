@@ -9,10 +9,10 @@ import {
     Message,
     TimestampStyles,
 } from "discord.js";
-import { Command } from "../../utils/schemas";
+import { SlashCommand } from "../../utils/schemas";
 import messages from "../../utils/messages";
 
-class MinecraftCommand extends Command {
+class MinecraftCommand extends SlashCommand {
     constructor() {
         super(
             new SlashCommandBuilder()
