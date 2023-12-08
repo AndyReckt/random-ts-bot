@@ -9,7 +9,7 @@ export default (client: Client) => {
     getFilesInDir(folder).forEach((file) => {
         const filePath = path.join(folder, file);
 
-        if (file.endsWith(".js")) {
+        if (file.endsWith(".js") || file.endsWith(".ts")) {
             try {
                 const module = require(filePath);
                 if (

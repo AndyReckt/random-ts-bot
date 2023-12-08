@@ -9,6 +9,12 @@ import messages from "../utils/messages";
 import { getFilesInDir } from "../utils/fileUtil";
 import path from "path";
 import { Command, RClient, SlashCommand } from "../utils/schemas";
+import {
+    existsSync,
+    mkdirSync,
+    readFileSync,
+    writeFileSync,
+} from "fs";
 
 const folder = __dirname + "/../commands/slash";
 
@@ -16,7 +22,7 @@ const loadSlashCommands = (client: RClient) => {
     getFilesInDir(folder).forEach((file) => {
         const filePath = path.join(folder, file);
 
-        if (file.endsWith(".js")) {
+        if (file.endsWith(".js") || file.endsWith(".ts")) {
             try {
                 const module = require(filePath);
                 if (
@@ -32,7 +38,28 @@ const loadSlashCommands = (client: RClient) => {
         }
     });
 };
+
+const noChangesToCommands = (client: RClient): boolean => {
+    const filename = __dirname + "/../.temp/commands.txt";
+    if (!existsSync(filename)) {
+        mkdirSync(__dirname + "/../.temp");
+        writeFileSync(filename, JSON.stringify(client.slashCommands));
+        return false;
+    }
+
+    let data = readFileSync(filename, "utf-8");
+
+    try {
+        return data == JSON.stringify(client.slashCommands);
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
+
 const refreshSlashCommands = async (client: RClient) => {
+    if (noChangesToCommands(client)) return;
+
     const rest = new REST().setToken(process.env.TOKEN!);
 
     try {
