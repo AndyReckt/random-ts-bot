@@ -11,6 +11,13 @@ class CommandListener extends Listener {
     }
 }
 
+let listener: CommandListener;
+
 export default (client: Client): CommandListener => {
-    return new CommandListener(client);
+    if (listener) {
+        return listener;
+    } else {
+        listener = new CommandListener(client);
+        return listener;
+    }
 };

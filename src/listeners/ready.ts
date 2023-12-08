@@ -9,6 +9,13 @@ class ReadyListener extends Listener {
     }
 }
 
+let listener: ReadyListener;
+
 export default (client: Client): ReadyListener => {
-    return new ReadyListener(client);
+    if (listener) {
+        return listener;
+    } else {
+        listener = new ReadyListener(client);
+        return listener;
+    }
 };
